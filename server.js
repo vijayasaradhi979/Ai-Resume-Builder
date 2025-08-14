@@ -16,7 +16,8 @@ app.use(cors());
 app.use(express.static('public'));
 
 // MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/resume_builder', {
+// Replace your MongoDB connection with:
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/resume_builder', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
