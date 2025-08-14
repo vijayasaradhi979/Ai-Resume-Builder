@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -102,9 +103,9 @@ const Resume = mongoose.model('Resume', ResumeSchema);
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: '', // Enter Your Mail
-        pass: ''  // Enter Pass Key
-    },
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+},
     debug: true,
     logger: true
 });
