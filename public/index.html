@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Builder - Create Professional Resumes</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>AI Resume Builder</h2>
+            </div>
+            <div class="nav-links">
+                <button class="btn btn--outline" onclick="showAuthModal('login')">Login</button>
+                <button class="btn btn--primary" onclick="showAuthModal('signup')">Sign Up</button>
+            </div>
+            <div class="user-menu hidden">
+                <span class="user-name"></span>
+                <button class="btn btn--outline" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Landing Page -->
+    <section id="landing" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Create Professional Resumes with AI</h1>
+                <p>Choose from 8+ professional templates and build your perfect resume in minutes</p>
+                <button class="btn btn--primary btn--lg" onclick="showTemplates()">Get Started</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Template Gallery -->
+    <section id="templates" class="templates-section">
+        <div class="container">
+            <h2>Choose Your Template</h2>
+            <div class="templates-grid" id="templatesGrid">
+                <!-- Templates will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Resume Builder -->
+    <section id="builder" class="builder-section hidden">
+        <div class="container">
+            <div class="builder-header">
+                <h2>Build Your Resume</h2>
+                <div class="builder-actions">
+                    <button class="btn btn--outline" onclick="changeTemplate()">Change Template</button>
+                    <button class="btn btn--secondary download-btn" onclick="downloadResume('pdf')">📄 Download PDF</button>
+                    <button class="btn btn--secondary download-btn" onclick="downloadResume('docx')">📝 Download DOCX</button>
+                </div>
+            </div>
+            <div class="builder-content">
+                <div class="builder-form">
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" placeholder="City, State, Country">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Professional Summary</label>
+                            <textarea class="form-control" id="summary" rows="4" placeholder="Brief summary of your professional background..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Experience</h3>
+                        <div id="experienceContainer">
+                            <div class="experience-item">
+                                <div class="form-group">
+                                    <label class="form-label">Job Title</label>
+                                    <input type="text" class="form-control" placeholder="Software Engineer">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Company</label>
+                                    <input type="text" class="form-control" placeholder="Tech Company Inc.">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Duration</label>
+                                    <input type="text" class="form-control" placeholder="Jan 2020 - Present">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" rows="3" placeholder="Describe your responsibilities and achievements..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn--outline" onclick="addExperience()">Add Experience</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Education</h3>
+                        <div id="educationContainer">
+                            <div class="education-item">
+                                <div class="form-group">
+                                    <label class="form-label">Degree</label>
+                                    <input type="text" class="form-control" placeholder="Bachelor of Science">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Institution</label>
+                                    <input type="text" class="form-control" placeholder="University Name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Year</label>
+                                    <input type="text" class="form-control" placeholder="2016-2020">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn--outline" onclick="addEducation()">Add Education</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Skills</h3>
+                        <div class="form-group">
+                            <label class="form-label">Skills (comma-separated)</label>
+                            <textarea class="form-control" id="skills" rows="3" placeholder="JavaScript, Python, React, Node.js, SQL, Git"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Additional Download Buttons at bottom of form -->
+                    <div class="form-section download-section">
+                        <h3>Download Your Resume</h3>
+                        <div class="download-buttons">
+                            <button class="btn btn--primary download-btn" onclick="downloadResume('pdf')">
+                                📄 Download PDF
+                            </button>
+                            <button class="btn btn--secondary download-btn" onclick="downloadResume('docx')">
+                                📝 Download DOCX
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resume-preview">
+                    <div class="preview-header">
+                        <h4>Live Preview</h4>
+                        <div class="preview-actions">
+                            <button class="btn btn--outline btn--sm" onclick="changeTemplate()">Change Template</button>
+                        </div>
+                    </div>
+                    <div id="resumePreview" class="resume-container">
+                        <!-- Resume preview will be rendered here -->
+                    </div>
+                    <!-- Download buttons in preview area -->
+                    <div class="preview-downloads">
+                        <button class="btn btn--primary" onclick="downloadResume('pdf')">📄 Download PDF</button>
+                        <button class="btn btn--secondary" onclick="downloadResume('docx')">📝 Download DOCX</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form">
+                <h3>Login to Your Account</h3>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                </form>
+                <p class="auth-switch">
+                    Don't have an account? <a href="#" onclick="showAuthModal('signup')">Sign up</a>
+                </p>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signupForm" class="auth-form hidden">
+                <h3>Create Your Account</h3>
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="signupName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="signupEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="signupPassword" required>
+                        <div class="password-requirements">
+                            <small>Password must be at least 8 characters with uppercase, lowercase, number, and special character</small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Sign Up</button>
+                </form>
+                <p class="auth-switch">
+                    Already have an account? <a href="#" onclick="showAuthModal('login')">Login</a>
+                </p>
+            </div>
+
+            <!-- Email Verification Form -->
+            <div id="verificationForm" class="auth-form hidden">
+                <h3>Verify Your Email</h3>
+                <p>We've sent a 6-digit verification code to your email address.</p>
+                <form onsubmit="handleVerification(event)">
+                    <div class="form-group">
+                        <label class="form-label">Verification Code</label>
+                        <input type="text" class="form-control verification-code" id="verificationCode" maxlength="6" placeholder="123456" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Verify Email</button>
+                </form>
+                <p class="auth-switch">
+                    Didn't receive the code? <a href="#" onclick="resendCode()">Resend Code</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Preview Modal -->
+    <div id="templateModal" class="modal hidden">
+        <div class="modal-content template-modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="template-preview-content">
+                <div class="template-info">
+                    <h3 id="templateName">Template Name</h3>
+                    <p id="templateDescription">Template description</p>
+                    <div class="template-stats">
+                        <span class="template-rating">★ <span id="templateRating">4.8</span></span>
+                        <span class="template-downloads"><span id="templateDownloads">15,420</span> downloads</span>
+                    </div>
+                    <button class="btn btn--primary" onclick="selectTemplate()">Use This Template</button>
+                </div>
+                <div class="template-preview-image">
+                    <div id="templatePreviewImage" class="template-sample">
+                        <!-- Template preview will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Generating your resume...</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="contact-cards">
+                    <div class="contact-card instagram">
+                        <div class="contact-icon">📷</div>
+                        <div class="contact-info">
+                            <span class="contact-label">Instagram</span>
+                            <span class="contact-value">v.i.j.j.u_netha</span>
+                        </div>
+                    </div>
+                    <div class="contact-card location">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-info">
+                            <span class="contact-label">Location</span>
+                            <span class="contact-value">Hyderabad</span>
+                        </div>
+                    </div>
+                    <div class="contact-card linkedin">
+                        <div class="contact-icon">💼</div>
+                        <div class="contact-info">
+                            <span class="contact-label">LinkedIn</span>
+                            <a href="http://linkedin.com/in/vijayasaradhikyatham9" target="_blank" class="contact-value">Connect</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-text">
+                    <p>&copy; 2025 AI Resume Builder. Create professional resumes with ease.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
